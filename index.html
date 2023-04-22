@@ -1,13 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
+  <head>
     <title>Random Nickname Generator</title>
-</head>
-<body>
+    <meta charset="utf-8" />
+  </head>
+  <body>
     <h1>Random Nickname Generator</h1>
-    <button id="generate-btn">Generate</button>
-    <p id="result"></p>
-    <script src="script.js"></script>
-</body>
+    <button onclick="getNickname()">Generate Nickname</button>
+    <p id="nickname"></p>
+
+    <script>
+      function getNickname() {
+        const apiKey = "7E001577EA67A4AB417612ED7C51CC75";
+        const apiUrl = "https://opendict.korean.go.kr/api/search";
+        const params = {
+          key: apiKey,
+          target: "entry",
+          method: "exact",
+          q: "이름",
+          sort: "popular",
+          start: 1,
+          num: 100,
+        };
+        const queryString = Object.keys(params)
+          .map((key) => key + "=" + params[key])
+          .join("&");
+
+        fetch(apiUrl + "?" + queryString)
+          .then((response) => response.json())
+          .then((data) => {
+            const length = data.channel.item.length;
+            const index = Math.floor(Math.random() * length);
+            const nickname = data.channel.item[index].word;
+            document.getElementById("nickname").innerHTML = nickname;
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+    </script>
+  </body>
 </html>
