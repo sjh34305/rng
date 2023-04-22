@@ -1,17 +1,18 @@
-const apiKey = 'D071A547D3B6B4A1959EBA7BB7439506';
-      const url = `https://opendict.korean.go.kr/api/search?key=${apiKey}&q=random&method=WORD_INFO`;
+const API_KEY = "D443BCC1477C358FFE112845B64E5884";
+      const generateBtn = document.getElementById("generate-btn");
+      const result = document.getElementById("result");
 
-      function generateWord() {
-        fetch(url)
-          .then(response => response.json())
-          .then(data => {
-            const words = data.channel.item;
-            const randomWord = words[Math.floor(Math.random() * words.length)];
-            const result = document.getElementById('result');
-            result.innerHTML = `랜덤한 단어: ${randomWord.word}`;
+      generateBtn.addEventListener("click", () => {
+        fetch(
+          `https://opendict.korean.go.kr/api/search?key=${API_KEY}&target=example&sort=random&q=%EC%9E%90%EB%8F%99`
+        )
+          .then((response) => response.text())
+          .then((data) => {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(data, "text/xml");
+            const word = xmlDoc.getElementsByTagName("word")[0].childNodes[0]
+              .nodeValue;
+            result.innerText = `${word}님`;
           })
-          .catch(error => console.error(error));
-      }
-
-      const btnGenerate = document.getElementById('btn-generate');
-      btnGenerate.addEventListener('btn-generate', generateWord);
+          .catch((error) => console.log(error));
+      });
