@@ -1,43 +1,50 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Random Nickname Generator</title>
-    <meta charset="utf-8" />
-  </head>
-  <body>
-    <h1>Random Nickname Generator</h1>
-    <button onclick="getNickname()">Generate Nickname</button>
-    <p id="nickname"></p>
+<head>
+  <meta charset="UTF-8">
+  <title>Random Nickname Generator</title>
+</head>
+<body>
+  <h1>Random Nickname Generator</h1>
+  <button onclick="generateNickname()">Generate</button>
+  <p id="nickname"></p>
+  
+  <script>
+    function generateNickname() {
+      // 우리말샘 API 요청 URL
+      const url = 'https://opendict.korean.go.kr/api/search';
 
-    <script>
-      function getNickname() {
-        const apiKey = "7E001577EA67A4AB417612ED7C51CC75";
-        const apiUrl = "https://opendict.korean.go.kr/api/search";
-        const params = {
-          key: apiKey,
-          target: "entry",
-          method: "exact",
-          q: "이름",
-          sort: "popular",
-          start: 1,
-          num: 100,
-        };
-        const queryString = Object.keys(params)
-          .map((key) => key + "=" + params[key])
-          .join("&");
+      // API 키
+      const key = 'A3759B44F655FCB921922EEE3B87F26B';
 
-        fetch(apiUrl + "?" + queryString)
-          .then((response) => response.json())
-          .then((data) => {
-            const length = data.channel.item.length;
-            const index = Math.floor(Math.random() * length);
-            const nickname = data.channel.item[index].word;
-            document.getElementById("nickname").innerHTML = nickname;
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      }
-    </script>
-  </body>
+      // API 요청 파라미터 (랜덤 단어를 검색하기 위해 검색어에 '*'를 사용)
+      const params = {
+        'key': key,
+        'q': '*',
+        'advanced': 'y',
+        'target': 'word'
+      };
+
+      // API 요청
+      fetch(url + '?' + new URLSearchParams(params))
+        .then(response => response.text())
+        .then(data => {
+          // API 응답 XML 파싱
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(data, 'text/xml');
+
+          // 랜덤 단어 선택
+          const words = xml.getElementsByTagName('word');
+          const word = words[Math.floor(Math.random() * words.length)].textContent;
+
+          // 닉네임 생성
+          const nickname = word.slice(0, 1) + Math.floor(Math.random() * 100);
+
+          // 결과 출력
+          document.getElementById('nickname').textContent = nickname;
+        })
+        .catch(error => console.error(error));
+    }
+  </script>
+</body>
 </html>
