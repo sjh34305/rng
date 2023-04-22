@@ -1,4 +1,4 @@
-const apiKey = "D443BCC1477C358FFE112845B64E5884";
+const apiKey = "A3759B44F655FCB921922EEE3B87F26B";
 
 function generateNickname() {
     const xhr = new XMLHttpRequest();
